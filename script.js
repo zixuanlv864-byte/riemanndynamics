@@ -42,6 +42,8 @@ const closeLightbox=()=>{lightbox.classList.remove('open');document.body.classLi
 lightbox.addEventListener('click',e=>{if(e.target===lightbox||e.target===lightbox.querySelector('.image-lightbox-close'))closeLightbox()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
 document.querySelectorAll('img').forEach(img=>{
+  // The navigation logo is a home link, so let its parent anchor handle the click.
+  if(img.closest('.brand')) return;
   img.classList.add('image-previewable');
   img.setAttribute('tabindex','0');
   const open=()=>{lightboxImage.src=img.currentSrc||img.src;lightboxImage.alt=img.alt||'Image preview';lightbox.classList.add('open');document.body.classList.add('lightbox-open')};
