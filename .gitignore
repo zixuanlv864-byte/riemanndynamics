@@ -1,0 +1,10 @@
+# Local preview / generated files
+screenshots/
+.capture-screens.mjs
+.DS_Store
+
+# Design/source notes are not required to run the website
+**/交互要求.docx
+
+# Replaced by the compressed MP4 used at runtime
+public/assets/riemann-1.0/顶部背景视频.mov
