@@ -13,19 +13,23 @@ document.querySelectorAll(backgroundVideoSelector).forEach(v=>{
   v.removeAttribute('controls');
   v.setAttribute('playsinline','');
 });
-// Content videos are usable on every viewport with native transport controls
-// plus an explicit speed selector (native desktop controls do not expose speed
-// consistently across browsers).
+// Content videos are usable on every viewport with native transport controls.
 document.querySelectorAll('video').forEach(v=>{
   if(v.matches(backgroundVideoSelector)||v.closest('.rm-hero,.home-hero,.company-hero,.news-hero,.careers-hero,.media-hero')) return;
   v.controls=true;
   v.setAttribute('playsinline','');
-  if(v.parentElement.querySelector(':scope > .video-speed-control')) return;
-  const label=document.createElement('label');
-  label.className='video-speed-control';
-  label.innerHTML='Speed <select aria-label="Playback speed"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>';
-  label.querySelector('select').addEventListener('change',e=>{v.playbackRate=Number(e.target.value)});
-  v.insertAdjacentElement('afterend',label);
+  if(matchMedia('(max-width:760px)').matches){
+    let pressTimer=null,pressStart=0,fast=false;
+    const toast=()=>{
+      let t=document.querySelector('.video-toast');
+      if(!t){t=document.createElement('div');t.className='video-toast';document.body.appendChild(t)}
+      t.textContent='长按加速';t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),1400);
+    };
+    const start=()=>{pressStart=Date.now();toast();pressTimer=setTimeout(()=>{fast=true;v.playbackRate=2},420)};
+    const end=()=>{clearTimeout(pressTimer);if(fast){v.playbackRate=1;fast=false}};
+    v.addEventListener('pointerdown',start);v.addEventListener('pointerup',end);v.addEventListener('pointercancel',end);v.addEventListener('pointerleave',end);
+    v.addEventListener('contextmenu',e=>e.preventDefault());
+  }
 });
 
 // Make every image inspectable without changing its original source or layout.

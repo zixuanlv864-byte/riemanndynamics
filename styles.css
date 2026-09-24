@@ -652,26 +652,8 @@ html,body,button,input,textarea,select{
   .rm-page .rm-identity .rm-stats{margin:22.55px auto;}
 }
 
-/* Shared media affordances. Background videos stay presentation-only; all
-   content videos expose native seek/mute controls and a speed selector. */
-.video-speed-control{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  width:max-content;
-  margin:7px 0 0 auto;
-  color:#66727c;
-  font-size:11px;
-  line-height:1.2;
-}
-.video-speed-control select{
-  border:1px solid #cfd2d0;
-  border-radius:4px;
-  background:#f8f8f5;
-  color:#15263b;
-  font:inherit;
-  padding:3px 5px;
-}
+/* Shared media affordances. Background videos stay presentation-only; content
+   videos expose native seek and mute controls. */
 .image-previewable{cursor:zoom-in}
 .image-lightbox{
   position:fixed;
@@ -734,7 +716,23 @@ body.lightbox-open{overflow:hidden}
   .home-page .robot-wrap{
     display:none;
   }
-  .video-speed-control{font-size:10px;margin-top:5px}
+  .video-toast{
+    position:fixed;
+    left:50%;
+    bottom:88px;
+    z-index:1100;
+    transform:translate(-50%,14px);
+    padding:9px 15px;
+    border-radius:18px;
+    background:rgba(9,26,48,.88);
+    color:#fff;
+    font-size:13px;
+    line-height:1;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s,transform .18s;
+  }
+  .video-toast.show{opacity:1;transform:translate(-50%,0)}
   .image-lightbox{padding:18px}
   .image-lightbox-close{top:10px;right:10px}
 }
