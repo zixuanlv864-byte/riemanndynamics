@@ -6,17 +6,43 @@ if(nav && !nav.querySelector('.menu-btn')){
 const menuButton=document.querySelector('.menu-btn'); if(menuButton)menuButton.addEventListener('click',()=>document.querySelector('.mobile-menu').classList.toggle('open'));
 document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.mobile-menu').classList.remove('open')));
 document.querySelectorAll('.media-hero video').forEach(v=>{const play=()=>v.play().catch(()=>{}),stop=()=>{v.pause();v.currentTime=0};v.addEventListener('mouseenter',play);v.addEventListener('mouseleave',stop);const io=new IntersectionObserver(e=>e[0].isIntersecting?play():v.pause(),{threshold:.35});io.observe(v)});
+const backgroundVideoSelector='.rm-hero video,.home-hero video,.company-hero video,.news-hero video,.careers-hero video,.media-hero video';
 // Hero videos are visual backgrounds: never expose transport controls.
-document.querySelectorAll('.rm-hero video,.home-hero video,.company-hero video,.news-hero video,.careers-hero video').forEach(v=>{
+document.querySelectorAll(backgroundVideoSelector).forEach(v=>{
   v.controls=false;
   v.removeAttribute('controls');
   v.setAttribute('playsinline','');
 });
-// Content videos remain directly usable on mobile with native playback controls.
-if(matchMedia('(max-width:760px)').matches) document.querySelectorAll('video').forEach(v=>{
-  if(v.closest('.rm-hero,.home-hero,.company-hero,.news-hero,.careers-hero')) return;
+// Content videos are usable on every viewport with native transport controls
+// plus an explicit speed selector (native desktop controls do not expose speed
+// consistently across browsers).
+document.querySelectorAll('video').forEach(v=>{
+  if(v.matches(backgroundVideoSelector)||v.closest('.rm-hero,.home-hero,.company-hero,.news-hero,.careers-hero,.media-hero')) return;
   v.controls=true;
   v.setAttribute('playsinline','');
+  if(v.parentElement.querySelector(':scope > .video-speed-control')) return;
+  const label=document.createElement('label');
+  label.className='video-speed-control';
+  label.innerHTML='Speed <select aria-label="Playback speed"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>';
+  label.querySelector('select').addEventListener('change',e=>{v.playbackRate=Number(e.target.value)});
+  v.insertAdjacentElement('afterend',label);
+});
+
+// Make every image inspectable without changing its original source or layout.
+const lightbox=document.createElement('div');
+lightbox.className='image-lightbox';
+lightbox.innerHTML='<button type="button" class="image-lightbox-close" aria-label="Close image preview">×</button><img alt="">';
+document.body.appendChild(lightbox);
+const lightboxImage=lightbox.querySelector('img');
+const closeLightbox=()=>{lightbox.classList.remove('open');document.body.classList.remove('lightbox-open')};
+lightbox.addEventListener('click',e=>{if(e.target===lightbox||e.target===lightbox.querySelector('.image-lightbox-close'))closeLightbox()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+document.querySelectorAll('img').forEach(img=>{
+  img.classList.add('image-previewable');
+  img.setAttribute('tabindex','0');
+  const open=()=>{lightboxImage.src=img.currentSrc||img.src;lightboxImage.alt=img.alt||'Image preview';lightbox.classList.add('open');document.body.classList.add('lightbox-open')};
+  img.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();open()});
+  img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
 });
 document.querySelectorAll('.desktop-nav a').forEach(a=>{const m={'Riemann-1.0':'riemann-1.0.html','Company':'company.html','News':'news.html','Careers':'careers.html'};if(m[a.textContent.trim()])a.href=m[a.textContent.trim()]});
 const currentPage=(location.pathname.split('/').pop()||'index.html').toLowerCase();

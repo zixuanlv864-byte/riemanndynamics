@@ -651,3 +651,90 @@ html,body,button,input,textarea,select{
 @media(min-width:761px){
   .rm-page .rm-identity .rm-stats{margin:22.55px auto;}
 }
+
+/* Shared media affordances. Background videos stay presentation-only; all
+   content videos expose native seek/mute controls and a speed selector. */
+.video-speed-control{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  width:max-content;
+  margin:7px 0 0 auto;
+  color:#66727c;
+  font-size:11px;
+  line-height:1.2;
+}
+.video-speed-control select{
+  border:1px solid #cfd2d0;
+  border-radius:4px;
+  background:#f8f8f5;
+  color:#15263b;
+  font:inherit;
+  padding:3px 5px;
+}
+.image-previewable{cursor:zoom-in}
+.image-lightbox{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  place-items:center;
+  padding:32px;
+  background:rgba(5,12,22,.86);
+}
+.image-lightbox.open{display:grid}
+.image-lightbox>img{
+  display:block;
+  max-width:min(94vw,1400px);
+  max-height:92vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:4px;
+  box-shadow:0 18px 60px rgba(0,0,0,.4);
+  cursor:zoom-out;
+}
+.image-lightbox-close{
+  position:absolute;
+  top:18px;
+  right:22px;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:50%;
+  background:rgba(0,0,0,.2);
+  color:#fff;
+  font-size:26px;
+  line-height:1;
+  cursor:pointer;
+}
+body.lightbox-open{overflow:hidden}
+
+@media(max-width:760px){
+  /* Reserve a narrow visual gap between the four cards so the arm cannot sit
+     over card copy on the home page. */
+  .home-page .about-cards{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:24px 18px;
+    width:100%;
+    height:auto;
+    margin:45px auto 0;
+    overflow:visible;
+  }
+  .home-page .about-card{
+    position:relative;
+    inset:auto;
+    z-index:3;
+    width:auto;
+    min-height:420px;
+    height:100%;
+    padding:24px 18px;
+  }
+  .home-page .robot-wrap{
+    display:none;
+  }
+  .video-speed-control{font-size:10px;margin-top:5px}
+  .image-lightbox{padding:18px}
+  .image-lightbox-close{top:10px;right:10px}
+}
